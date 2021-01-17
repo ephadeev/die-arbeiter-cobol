@@ -1,0 +1,7 @@
+           SELECT ABTEIL-FILE
+               ASSIGN TO "abteil.dat"
+               ORGANIZATION IS INDEXED
+               RECORD KEY IS ABTEILUNG-ID
+               ALTERNATE KEY IS ABTEILUNG-NAME
+               ALTERNATE KEY IS PRAEMIE WITH DUPLICATES
+               ACCESS MODE IS DYNAMIC.

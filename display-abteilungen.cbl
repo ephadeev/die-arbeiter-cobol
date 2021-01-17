@@ -1,0 +1,127 @@
+      ******************************************************************
+      * Display details of selected Abteilung
+      ******************************************************************
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DISPLAY-ABTEILUNGEN.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           COPY "select-abteil.cbl".
+           COPY "select-arbeiter.cbl".
+
+       DATA DIVISION.
+       FILE SECTION.
+           COPY "fd-abteil.cbl".
+           COPY "fd-arbeiter.cbl".
+
+       WORKING-STORAGE SECTION.
+       77  ARBEITER-FILE-AT-END PIC X.
+       77  ABTEIL-FILE-AT-END   PIC X.
+
+       01  TABLE-ABTEIL-RECORD OCCURS 2 TIMES INDEXED BY ABTEIL-INDEX.
+           05 TABLE-ABTEILUNG-ID   PIC 9(4).
+           05 TABLE-ABTEILUNG-NAME PIC X(100).
+           05 TABLE-PRAEMIE        PIC 9(3).
+
+       01  TABLE-ARBEITER-RECORD OCCURS 7 TIMES
+               INDEXED BY ARBEITER-INDEX.
+           05 TABLE-ARBEITER-ID    PIC 9(6).
+           05 TABLE-ABTEILUNG-ID   PIC 9(4).
+           05 TABLE-CHIEF-ID       PIC 9(6).
+           05 TABLE-FAMILIE        PIC X(100).
+           05 TABLE-NAME           PIC X(100).
+           05 TABLE-SALARY         PIC 99999V9.
+           05 TABLE-EINSTELL-DATUM PIC XXXXXXXXXX.
+
+       PROCEDURE DIVISION.
+       PROGRAM-START.
+           PERFORM OPENING-PROCEDURE.
+           PERFORM MAIN-PROCESS.
+           PERFORM CLOSING-PROCEDURE.
+
+       PROGRAM-DONE.
+           STOP RUN.
+
+       OPENING-PROCEDURE.
+           OPEN I-O ABTEIL-FILE.
+           OPEN I-O ARBEITER-FILE.
+           PERFORM LOAD-ABTEIL-TABLE.
+
+       MAIN-PROCESS.
+           PERFORM INQUIRE-BY-ABTEILUNG.
+
+       LOAD-ABTEIL-TABLE.
+           PERFORM CLEAR-TABLE.
+           SET ABTEIL-INDEX TO 1.
+           PERFORM READ-NEXT-ABTEIL-RECORD.
+           PERFORM LOAD-ONE-ABTEIL-RECORD
+               UNTIL ABTEIL-FILE-AT-END = "Y" OR ABTEIL-INDEX > 2.
+
+       CLEAR-TABLE.
+           PERFORM CLEAR-ONE-TABLE-ROW
+               VARYING ABTEIL-INDEX FROM 1 BY 1
+               UNTIL ABTEIL-INDEX > 2.
+
+       CLEAR-ONE-TABLE-ROW.
+           MOVE SPACE TO TABLE-ABTEIL-RECORD(ABTEIL-INDEX).
+
+       LOAD-ONE-ABTEIL-RECORD.
+           MOVE ABTEILUNG-ID TO TABLE-ABTEILUNG-ID(ABTEIL-INDEX).
+           MOVE ABTEILUNG-NAME TO TABLE-ABTEILUNG-NAME(ABTEIL-INDEX).
+           PERFORM READ-NEXT-ABTEIL-RECORD.
+           IF ABTEIL-FILE-AT-END NOT = "Y"
+               SET ABTEIL-INDEX UP BY 1
+               IF ABTEIL-INDEX > 2
+                   DISPLAY "TABLE FULL".
+
+       CLOSING-PROCEDURE.
+           CLOSE ABTEIL-FILE.
+           CLOSE ARBEITER-FILE.
+
+       INQUIRE-BY-ABTEILUNG.
+           PERFORM GET-EXISTING-RECORD.
+           PERFORM INQUIRE-RECORDS
+               UNTIL ABTEILUNG-NAME = SPACES.
+
+       INQUIRE-RECORDS.
+           PERFORM DISPLAY-ALL-FIELDS.
+           PERFORM GET-EXISTING-RECORD.
+
+       GET-EXISTING-RECORD.
+           PERFORM ACCEPT-EXISTING-KEY.
+           PERFORM RE-ACCEPT-EXISTING-KEY
+               UNTIL .
+
+       ACCEPT-EXISTING-KEY.
+           PERFORM INIT-FOR-KEY-ENTRY.
+           PERFORM ENTER-VENDOR-NAME.
+           IF ABTEILUNG-NAME NOT = SPACES
+               PERFORM READ-FISRT-ABTEIL-RECORD.
+
+       RE-ACCEPT-EXISTING-KEY.
+           DISPLAY "RECORD NOT FOUND".
+           PERFORM ACCEPT-EXISTING-KEY.
+
+       ENTER-ABTEILUNG-NAME.
+           PERFORM ACCEPT-ABTEILUNG-NAME.
+
+       ACCEPT-ABTEILUNG-NAME.
+           DISPLAY "ENTER ABTEILUNG NAME".
+           ACCEPT ABTEILUNG-NAME.
+
+       DISPLAY-ALL-FIELDS.
+           DISPLAY "ID  FAMILIE NAME SALARY".
+           DISPLAY ARBEITER-ID " " FAMILIE " " NAME " " SALARY.
+
+       READ-FIRST-ARBEITER-RECORD.
+           MOVE "N" TO ARBEITER-FILE-AT-END.
+
+
+       READ-NEXT-ABTEIL-RECORD.
+           MOVE "N" TO ABTEIL-FILE-AT-END.
+           READ ABTEIL-FILE NEXT RECORD
+               AT END
+               MOVE "Y" TO ABTEIL-FILE-AT-END.
+
+       END PROGRAM DISPLAY-ABTEILUNGEN.
