@@ -263,7 +263,7 @@
 
        ENTER-ABTEILUNG-ID.
            DISPLAY "ENTER ABTEILUNG ID (1 or 2)".
-           ACCEPT ABTEILUNG-ID.
+           ACCEPT ARBEITER-ABTEILUNG-ID.
 
        ENTER-CHIEF-ID.
            PERFORM ACCEPT-CHIEF-ID.
@@ -286,7 +286,7 @@
 
        ENTER-NAME.
            DISPLAY "ENTER NAME".
-           ACCEPT NAME.
+           ACCEPT ARBEITER-NAME.
 
        ENTER-SALARY.
            DISPLAY "ENTER SALARY.".
@@ -314,7 +314,7 @@
            DISPLAY "  ARBEITER ID: " ARBEITER-ID.
 
        DISPLAY-ABTEILUNG-ID.
-           DISPLAY "1. ABTEILUNG ID: " ABTEILUNG-ID.
+           DISPLAY "1. ABTEILUNG ID: " ARBEITER-ABTEILUNG-ID.
 
        DISPLAY-CHIEF-ID.
            DISPLAY "2. CHIEF ID: " CHIEF-ID.
@@ -323,7 +323,7 @@
            DISPLAY "3. FAMILIE: " FAMILIE.
 
        DISPLAY-NAME.
-           DISPLAY "4. NAME: " NAME.
+           DISPLAY "4. NAME: " ARBEITER-NAME.
 
        DISPLAY-SALARY.
            DISPLAY "5. SALARY: " SALARY.
